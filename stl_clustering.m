@@ -3,7 +3,7 @@ clear
 clc
 
 %% Opening the file
-filename = 'ChessSet.stl';
+filename = 'cyl.stl';
 [v, f, n, c, stltitle] = stlread(filename);
 [v, f]=patchslim(v, f);
 
@@ -18,10 +18,10 @@ disp(['File Name:          ' filename]);
 disp(['Number of vertices: ' num2str(num_points)]);
 disp(['Number of faces:    ' num2str(num_faces)]);
 
-return
+
 %% Clustering
 do_cluster_01;
-
+return
 %% Plotting the clusters
 cmap = hsv(k);
 for cluster = 1:k

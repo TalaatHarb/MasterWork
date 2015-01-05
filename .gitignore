@@ -26,7 +26,11 @@
 *.sql
 *.sqlite
 
-# Models 4D #
+# Backup #
+######################
+*.asv
+
+# Models 3D #
 ######################
 *.stl
 *.STL
