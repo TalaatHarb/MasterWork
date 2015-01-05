@@ -1,10 +1,10 @@
 % Array to store which points are in a cluster and which are not
-cluster = zeros(num_points, 1);
+clusterID = zeros(num_points, 1);
 currentCluster = 1;
-tolerance = 1e-6;;
+tolerance = 1e-3;;
 for vertexCounter = 1:num_points
     % Ignoring already taken points
-    if cluster(vertexCounter,1) ~= 0
+    if clusterID(vertexCounter,1) ~= 0
         continue;
     else
         currentVertex = v(vertexCounter, :);
@@ -36,13 +36,13 @@ for vertexCounter = 1:num_points
         D = -dot(normal,currentVertex);
         for vertexCounter2 = 1:num_points
             % Ignoring already taken points
-            if cluster(vertexCounter2,1) ~= 0
+            if clusterID(vertexCounter2,1) ~= 0
                 continue;
             else
                 % Add all verteces in the plane to the current cluster
-                proximity_to_plane = dot(normal, v(vertexCounter2,:))+ D;
+                proximity_to_plane = (dot(normal, v(vertexCounter2,:))+ D)/norm(v(vertexCounter2,:));
                 if proximity_to_plane <= tolerance
-                    cluster(vertexCounter2,1) = currentCluster;
+                    clusterID(vertexCounter2,1) = currentCluster;
                 end
             end
         end
@@ -50,4 +50,4 @@ for vertexCounter = 1:num_points
     end
 end
 % Caculating the number of clusters
-k = max(cluster(:))
+k = max(clusterID(:))

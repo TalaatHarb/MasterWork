@@ -3,7 +3,7 @@ clear
 clc
 
 %% Opening the file
-filename = 'cyl.stl';
+filename = 'multi_4sections.stl';
 [v, f, n, c, stltitle] = stlread(filename);
 [v, f]=patchslim(v, f);
 
