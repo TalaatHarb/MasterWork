@@ -1,5 +1,6 @@
 %% Clearing Old Data
-clear
+clear all
+close all
 clc
 tic;
 %% Opening the file
@@ -34,7 +35,9 @@ for cluster = 1:k
     C = repmat(colors(cluster,:),numel(X),1);
     scatter3(X,Y,Z,S,C);
     hold on;
+    clearvars X Y Z S C
 end
+clearvars colors
 patch('Faces',f,'Vertices',v);
 alpha(0.5);
 hold off;

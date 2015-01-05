@@ -1,5 +1,5 @@
 function result = do_cluster_01(filename)
-[v, f, n, c, stltitle] = stlread(filename);
+[v, f, ~, ~, ~] = stlread(filename);
 [v, f]=patchslim(v, f);
 
 % Number of vertices
@@ -45,7 +45,7 @@ for vertexCounter = 1:num_points
                 distances(neighbor,1) = distanceMeasure(vertexCounter, tempList(neighbor));
             end
         end
-        [M,I] = sort(distances(:,1));
+        [~,I] = sort(distances(:,1));
         indexes_of_closest_2 = I(1:2,1);
         closestTwo = neighborhood(indexes_of_closest_2,:);
         % Calculating the vertex plane
