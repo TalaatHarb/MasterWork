@@ -1,7 +1,7 @@
 %% Clearing Old Data
 clear
 clc
-
+tic;
 %% Opening the file
 filename = 'multi.stl';
 [v, f, n, c, stltitle] = stlread(filename);
@@ -35,5 +35,7 @@ for cluster = 1:k
     scatter3(X,Y,Z,S,C);
     hold on;
 end
-patch('Faces',f,'Vertices',v,'FaceVertexCData',c);
+% patch('Faces',f,'Vertices',v,'FaceVertexCData',c);
 hold off;
+
+toc;
