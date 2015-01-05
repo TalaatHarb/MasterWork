@@ -25,7 +25,9 @@ do_cluster_01;
 
 disp(['Number of cross sections:          ' num2str(k)]);
 
-colors = hsv(k);
+% http://www.mathworks.com/help/matlab/ref/colormap.html
+colors = jet(k);
+
 for cluster = 1:k
     X = v(clusterID == cluster,1);
     Y = v(clusterID == cluster,2);
