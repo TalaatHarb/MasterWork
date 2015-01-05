@@ -1,7 +1,7 @@
 % Array to store which points are in a cluster and which are not
 clusterID = zeros(num_points, 1);
 currentCluster = 1;
-tolerance = 1e-4;;
+tolerance = 1e-6;;
 distanceMeasure = zeros(num_points, num_points);
 for vertexCounter = 1:num_points
     % Ignoring already taken points
@@ -58,3 +58,8 @@ for vertexCounter = 1:num_points
 end
 % Caculating the number of cross sections
 k = max(clusterID(:));
+
+result = {num_points;num_faces;k;v;f;clusterID};
+for cluster = 1:k
+    result{6+cluster} = v(clusterID == cluster,:);
+end

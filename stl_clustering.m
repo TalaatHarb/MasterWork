@@ -3,7 +3,7 @@ clear
 clc
 tic;
 %% Opening the file
-filename = 'multi.stl';
+filename = 'diff_cross.stl';
 [v, f, n, c, stltitle] = stlread(filename);
 [v, f]=patchslim(v, f);
 
