@@ -20,7 +20,7 @@ disp(['Number of faces:    ' num2str(num_faces)]);
 
 return
 %% Clustering
-do_cluster_141223;
+do_cluster_01;
 
 %% Plotting the clusters
 cmap = hsv(k);

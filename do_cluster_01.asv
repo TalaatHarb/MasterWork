@@ -1,0 +1,6 @@
+% Array to store which points are in a cluster and which are not
+taken = zeros(num_points, 1);
+
+for counter = 1:num_points
+    if taken
+end
