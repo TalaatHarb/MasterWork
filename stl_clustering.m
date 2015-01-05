@@ -25,17 +25,18 @@ do_cluster_01;
 
 disp(['Number of cross sections:          ' num2str(k)]);
 
-col = hsv(k);
+colors = hsv(k);
 for cluster = 1:k
     X = v(clusterID == cluster,1);
     Y = v(clusterID == cluster,2);
     Z = v(clusterID == cluster,3);
     S = 16;
-    C = repmat(col(cluster,:),numel(X),1);
+    C = repmat(colors(cluster,:),numel(X),1);
     scatter3(X,Y,Z,S,C);
     hold on;
 end
-% patch('Faces',f,'Vertices',v,'FaceVertexCData',c);
+patch('Faces',f,'Vertices',v);
+alpha(0.5);
 hold off;
 
 toc;

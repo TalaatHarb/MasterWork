@@ -41,7 +41,6 @@ for vertexCounter = 1:num_points
         % Calculating the vertex plane
         normal = cross(closestTwo(1,:)-currentVertex, currentVertex-closestTwo(2,:));
         D = -dot(normal,currentVertex);
-        pro = [];
         for vertexCounter2 = 1:num_points
             % Ignoring already taken points
             if clusterID(vertexCounter2,1) ~= 0
@@ -49,7 +48,6 @@ for vertexCounter = 1:num_points
             else
                 % Add all verteces in the plane to the current cluster
                 proximity_to_plane = abs((dot(normal, v(vertexCounter2,:))+ D)/norm(v(vertexCounter2,:)));
-                pro = [pro; proximity_to_plane];
                 if proximity_to_plane <= tolerance
                     clusterID(vertexCounter2,1) = currentCluster;
                 end
@@ -58,5 +56,5 @@ for vertexCounter = 1:num_points
         currentCluster = currentCluster + 1;
     end
 end
-% Caculating the number of clusters
+% Caculating the number of cross sections
 k = max(clusterID(:));
