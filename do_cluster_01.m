@@ -2,6 +2,7 @@
 clusterID = zeros(num_points, 1);
 currentCluster = 1;
 tolerance = 1e-4;;
+distanceMeasure = zeros(num_points, num_points);
 for vertexCounter = 1:num_points
     % Ignoring already taken points
     if clusterID(vertexCounter,1) ~= 0
@@ -26,7 +27,13 @@ for vertexCounter = 1:num_points
         distances = zeros(num_connected, 1);
         for neighbor = 1:num_connected
             % Calculating distance to neighbors
-            distances(neighbor,1) = norm (currentVertex - neighborhood(neighbor,:));
+            if distanceMeasure(vertexCounter, tempList(neighbor)) == 0
+                distances(neighbor,1) = norm (currentVertex - neighborhood(neighbor,:));
+                distanceMeasure(vertexCounter, tempList(neighbor)) = distances(neighbor,1);
+                distanceMeasure(tempList(neighbor), vertexCounter) = distances(neighbor,1);
+            else
+                distances(neighbor,1) = distanceMeasure(vertexCounter, tempList(neighbor));
+            end
         end
         [M,I] = sort(distances(:,1));
         indexes_of_closest_2 = I(1:2,1);
@@ -52,4 +59,4 @@ for vertexCounter = 1:num_points
     end
 end
 % Caculating the number of clusters
-k = max(clusterID(:))
+k = max(clusterID(:));
