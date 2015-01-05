@@ -21,13 +21,16 @@ disp(['Number of faces:    ' num2str(num_faces)]);
 
 %% Clustering
 do_cluster_01;
-return
 %% Plotting the clusters
-cmap = hsv(k);
+col = hsv(k);
 for cluster = 1:k
-    plot3(m(cluster,1),m(cluster,2),m(cluster,3),'o','Color',cmap(cluster,:));
+    X = v(clusterID == cluster,1);
+    Y = v(clusterID == cluster,2);
+    Z = v(clusterID == cluster,3);
+    S = 16;
+    C = repmat(col(cluster,:),numel(X),1);
+    scatter3(X,Y,Z,S,C);
     hold on;
-    plot3(v(id(1:count(cluster),cluster),1),v(id(1:count(cluster),cluster),2),v(id(1:count(cluster),cluster),3),'+','Color',cmap(cluster,:));
 end
-patch('Faces',f,'Vertices',v,'FaceVertexCData',c);
+% patch('Faces',f,'Vertices',v,'FaceVertexCData',c);
 hold off;
