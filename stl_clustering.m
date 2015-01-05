@@ -3,35 +3,33 @@ clear
 clc
 tic;
 %% Opening the file
-filename = 'diff_cross.stl';
-[v, f, n, c, stltitle] = stlread(filename);
-[v, f]=patchslim(v, f);
+filename = 'multi.stl';
 
-% Number of vertices
-num_points = size(v,1);
+%% Clustering
+result = do_cluster_01(filename);
 
-% Number of faces
-num_faces = size(f,1);
+num_points = result{1};
+num_faces = result{2};
+k = result{3};
+v = result{4};
+f = result{5};
+clusterID = result{6};
 
+%% Plotting the clusters
 % Display file parameters
 disp(['File Name:                         ' filename]);
 disp(['Number of vertices:                ' num2str(num_points)]);
 disp(['Number of faces:                   ' num2str(num_faces)]);
-
-
-%% Clustering
-do_cluster_01;
-%% Plotting the clusters
-
 disp(['Number of cross sections:          ' num2str(k)]);
 
 % http://www.mathworks.com/help/matlab/ref/colormap.html
 colors = jet(k);
 
 for cluster = 1:k
-    X = v(clusterID == cluster,1);
-    Y = v(clusterID == cluster,2);
-    Z = v(clusterID == cluster,3);
+    current_cluster = result{6+cluster};
+    X = current_cluster(:,1);
+    Y = current_cluster(:,2);
+    Z = current_cluster(:,3);
     S = 16;
     C = repmat(colors(cluster,:),numel(X),1);
     scatter3(X,Y,Z,S,C);

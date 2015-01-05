@@ -1,7 +1,17 @@
+function result = do_cluster_01(filename)
+[v, f, n, c, stltitle] = stlread(filename);
+[v, f]=patchslim(v, f);
+
+% Number of vertices
+num_points = size(v,1);
+
+% Number of faces
+num_faces = size(f,1);
+
 % Array to store which points are in a cluster and which are not
 clusterID = zeros(num_points, 1);
 currentCluster = 1;
-tolerance = 1e-6;;
+tolerance = 1e-6;
 distanceMeasure = zeros(num_points, num_points);
 for vertexCounter = 1:num_points
     % Ignoring already taken points
@@ -62,4 +72,5 @@ k = max(clusterID(:));
 result = {num_points;num_faces;k;v;f;clusterID};
 for cluster = 1:k
     result{6+cluster} = v(clusterID == cluster,:);
+end
 end
