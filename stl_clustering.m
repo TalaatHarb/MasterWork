@@ -3,7 +3,7 @@ clear
 clc
 
 %% Opening the file
-filename = 'multi_4sections.stl';
+filename = 'multi.stl';
 [v, f, n, c, stltitle] = stlread(filename);
 [v, f]=patchslim(v, f);
 
@@ -14,14 +14,17 @@ num_points = size(v,1);
 num_faces = size(f,1);
 
 % Display file parameters
-disp(['File Name:          ' filename]);
-disp(['Number of vertices: ' num2str(num_points)]);
-disp(['Number of faces:    ' num2str(num_faces)]);
+disp(['File Name:                         ' filename]);
+disp(['Number of vertices:                ' num2str(num_points)]);
+disp(['Number of faces:                   ' num2str(num_faces)]);
 
 
 %% Clustering
 do_cluster_01;
 %% Plotting the clusters
+
+disp(['Number of cross sections:          ' num2str(k)]);
+
 col = hsv(k);
 for cluster = 1:k
     X = v(clusterID == cluster,1);
@@ -32,5 +35,5 @@ for cluster = 1:k
     scatter3(X,Y,Z,S,C);
     hold on;
 end
-% patch('Faces',f,'Vertices',v,'FaceVertexCData',c);
+patch('Faces',f,'Vertices',v,'FaceVertexCData',c);
 hold off;
