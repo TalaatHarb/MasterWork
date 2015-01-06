@@ -7,7 +7,7 @@ tic;
 filename = 'test.stl';
 
 %% Clustering
-do_cluster_02_script;
+result = do_cluster_02(filename);
 
 num_points = result{1};
 num_faces = result{2};

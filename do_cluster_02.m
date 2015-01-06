@@ -12,8 +12,8 @@ num_faces = size(f,1);
 PlaneID = zeros(num_points, 1);
 currentPlane = 1;
 tolerance = 9e-7;
-dissimilarity = zeros(num_points, num_points);
-connectivity = zeros(num_points, num_points);
+dissimilarity = sparse(num_points, num_points);
+connectivity = sparse(num_points, num_points);
 for faceCounter = 1:num_faces
     connectivity(f(faceCounter,1),f(faceCounter,2)) = 1;
     connectivity(f(faceCounter,2),f(faceCounter,1)) = 1;
@@ -88,7 +88,7 @@ for plane = 1:p
         
         % Ignoring already taken points
         currentVertexID = currentVertices(nextVertex,1);
-        if ClusterID(currentVertexID,1) ~= 0
+        if ((ClusterID(currentVertexID,1) ~= 0) || isempty(nextVertex))
             currentCluster = currentCluster + 1;
             [~,nextVertex] = min(ClusterID(currentVertices,:));
             continue;
@@ -98,7 +98,13 @@ for plane = 1:p
             ClusterID(currentVertexID,1) = currentCluster;
             
             [~,tempList] = find(connectivity(currentVertexID,:)>0);
-            tempList = tempList.';
+            tempList = tempList(ClusterID(tempList) ~= currentCluster).';
+            
+            if isempty(tempList)
+                currentCluster = currentCluster + 1;
+                [~,nextVertex] = min(ClusterID(currentVertices,:));
+                continue;
+            end
             
             num_connected = size(tempList, 1);
             neighborhood = v(tempList,:);
@@ -118,16 +124,22 @@ for plane = 1:p
                 end
             end
             [~,I] = min(distances(:,1));
-            closestVertex = neighborhood(I,:);
+            closestVertex = tempList(I,1);
         end
-        nextVertex = closestVertex;
+        nextVertex = find(currentVertices == closestVertex);
+        if isempty(nextVertex)
+            currentCluster = currentCluster + 1;
+            [~,nextVertex] = min(ClusterID(currentVertices,:));
+            continue;
+        end
     end
+    currentCluster = currentCluster + 1;
 end
-
-k = max(ClusterID(:));
+clusterList = unique(ClusterID);
+k = size(clusterList,1);
 clusters = cell(k,1);
 for cluster = 1:k
-    clusters{cluster,1} = v(ClusterID == cluster,:);
+    clusters{cluster,1} = v(ClusterID == clusterList(cluster,1),:);
 end
 
 result = {num_points;...
@@ -140,6 +152,7 @@ result = {num_points;...
     PlaneID;...
     ClusterID;...
     planes;...
-    clusters...
+    clusters;...
+    dissimilarity...
     };
 end

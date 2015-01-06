@@ -135,11 +135,11 @@ for plane = 1:p
     end
     currentCluster = currentCluster + 1;
 end
-
-k = max(ClusterID(:));
+clusterList = unique(ClusterID);
+k = size(clusterList,1);
 clusters = cell(k,1);
 for cluster = 1:k
-    clusters{cluster,1} = v(ClusterID == cluster,:);
+    clusters{cluster,1} = v(ClusterID == clusterList(cluster,1),:);
 end
 
 result = {num_points;...
