@@ -88,7 +88,7 @@ for plane = 1:p
         
         % Ignoring already taken points
         currentVertexID = currentVertices(nextVertex,1);
-        if (ClusterID(currentVertexID,1) ~= 0) || isempty(nextVertex)
+        if ((ClusterID(currentVertexID,1) ~= 0) || isempty(nextVertex))
             currentCluster = currentCluster + 1;
             [~,nextVertex] = min(ClusterID(currentVertices,:));
             continue;
@@ -98,10 +98,11 @@ for plane = 1:p
             ClusterID(currentVertexID,1) = currentCluster;
             
             [~,tempList] = find(connectivity(currentVertexID,:)>0);
-            tempList = tempList(ClusterID(tempList) == 0).';
+            tempList = tempList(ClusterID(tempList) ~= currentCluster).';
             
             if isempty(tempList)
-                currentVertexID = 1;
+                currentCluster = currentCluster + 1;
+                [~,nextVertex] = min(ClusterID(currentVertices,:));
                 continue;
             end
             
@@ -126,6 +127,11 @@ for plane = 1:p
             closestVertex = tempList(I,1);
         end
         nextVertex = find(currentVertices == closestVertex);
+        if isempty(nextVertex)
+            currentCluster = currentCluster + 1;
+            [~,nextVertex] = min(ClusterID(currentVertices,:));
+            continue;
+        end
     end
     currentCluster = currentCluster + 1;
 end
