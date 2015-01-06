@@ -70,10 +70,67 @@ for vertexCounter = 1:num_points
         currentPlane = currentPlane + 1;
     end
 end
+
 % Caculating the number of planes
 p = max(PlaneID(:));
-k = p;
-ClusterID = PlaneID;
+planes = cell(p,1);
+
+ClusterID = zeros(num_points, 1);
+currentCluster = 1;
+for plane = 1:p
+    
+    planes{plane,1} = v(PlaneID == plane,:);
+    currentPlane = planes{plane,1};
+    currentVertices = find(PlaneID(:,1) == plane);
+    
+    nextVertex = 1;
+    while(~all(ClusterID(currentVertices,1) ~= 0))
+        size(currentVertices)
+        nextVertex
+        % Ignoring already taken points
+        currentVertexID = currentVertices(nextVertex,1);
+        if ClusterID(currentVertexID,1) ~= 0
+            currentCluster = currentCluster + 1;
+            [~,nextVertex] = min(ClusterID(currentVertices,:));
+            continue;
+        else
+            currentVertex = currentPlane(nextVertex, :);
+            % Clustering
+            ClusterID(currentVertexID,1) = currentCluster;
+            
+            [~,tempList] = find(connectivity(currentVertexID,:)>0);
+            tempList = tempList.';
+            
+            num_connected = size(tempList, 1);
+            neighborhood = v(tempList,:);
+            distances = zeros(num_connected, 1);
+            for neighbor = 1:num_connected
+                % Calculating distance to neighbors
+                if dissimilarity(currentVertexID, tempList(neighbor)) == 0
+                    distances(neighbor,1) = norm (currentVertex -...
+                        neighborhood(neighbor,:));
+                    dissimilarity(currentVertexID, tempList(neighbor)) =...
+                        distances(neighbor,1);
+                    dissimilarity(tempList(neighbor), currentVertexID) =...
+                        distances(neighbor,1);
+                else
+                    distances(neighbor,1) = dissimilarity(currentVertexID...
+                        , tempList(neighbor));
+                end
+            end
+            [~,I] = min(distances(:,1));
+            closestVertex = neighborhood(I,:);
+        end
+        nextVertex = closestVertex;
+    end
+end
+
+k = max(ClusterID(:));
+clusters = cell(k,1);
+for cluster = 1:k
+    clusters{cluster,1} = v(ClusterID == cluster,:);
+end
+
 result = {num_points;...
     num_faces;...
     p;...
@@ -82,10 +139,8 @@ result = {num_points;...
     f;...
     connectivity;...
     PlaneID;...
-    ClusterID...
+    ClusterID;...
+    planes;...
+    clusters...
     };
-num_fields = size(result,1);
-for plane = 1:p
-    result{num_fields+plane} = v(PlaneID == plane,:);
-end
 end
