@@ -7,18 +7,20 @@ tic;
 filename = 'test.stl';
 
 %% Clustering
-result = do_cluster_02(filename);
-return
+do_cluster_02_script;
+
 num_points = result{1};
 num_faces = result{2};
 p = result{3};
-k = result{3};
+k = result{4};
 v = result{5};
 f = result{6};
 connectivity = result{7};
 PlaneID = result{8};
 ClusterID = result{9};
-
+planes = result{10};
+clusters = result{11};
+dissimilarity = result{12};
 %% Plotting the clusters
 % Display file parameters
 disp(['File Name:                         ' filename]);
@@ -31,7 +33,7 @@ colors = jet(k);
 
 for cluster = 1:k
     
-    current_cluster = result{9+cluster};
+    current_cluster = clusters{cluster};
     
     % Displaying some information about the cluster
     fprintf('\n');

@@ -1,4 +1,3 @@
-function result = do_cluster_02(filename)
 [v, f, ~, ~, ~] = stlread(filename);
 [v, f]=patchslim(v, f);
 
@@ -12,8 +11,8 @@ num_faces = size(f,1);
 PlaneID = zeros(num_points, 1);
 currentPlane = 1;
 tolerance = 9e-7;
-dissimilarity = zeros(num_points, num_points);
-connectivity = zeros(num_points, num_points);
+dissimilarity = sparse(num_points, num_points);
+connectivity = sparse(num_points, num_points);
 for faceCounter = 1:num_faces
     connectivity(f(faceCounter,1),f(faceCounter,2)) = 1;
     connectivity(f(faceCounter,2),f(faceCounter,1)) = 1;
@@ -98,8 +97,10 @@ for plane = 1:p
             ClusterID(currentVertexID,1) = currentCluster;
             
             [~,tempList] = find(connectivity(currentVertexID,:)>0);
-            tempList = tempList.';
-            
+            tempList = tempList(ClusterID(tempList) ~= currentCluster).';
+            if(isempty(tempList))
+                continue;
+            end
             num_connected = size(tempList, 1);
             neighborhood = v(tempList,:);
             distances = zeros(num_connected, 1);
@@ -118,9 +119,9 @@ for plane = 1:p
                 end
             end
             [~,I] = min(distances(:,1));
-            closestVertex = neighborhood(I,:);
+            closestVertex = tempList(I,1);
         end
-        nextVertex = closestVertex;
+        nextVertex = find(currentVertices == closestVertex);
     end
 end
 
@@ -140,6 +141,7 @@ result = {num_points;...
     PlaneID;...
     ClusterID;...
     planes;...
-    clusters...
+    clusters;...
+    dissimilarity...
     };
-end
+clearvars -except result filename
