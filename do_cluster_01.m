@@ -12,7 +12,7 @@ num_faces = size(f,1);
 PlaneID = zeros(num_points, 1);
 currentPlane = 1;
 tolerance = 9e-7;
-distanceMeasure = zeros(num_points, num_points);
+dissimilarity = zeros(num_points, num_points);
 connectivity = zeros(num_points, num_points);
 for faceCounter = 1:num_faces
     connectivity(f(faceCounter,1),f(faceCounter,2)) = 1;
@@ -36,18 +36,23 @@ for vertexCounter = 1:num_points
         distances = zeros(num_connected, 1);
         for neighbor = 1:num_connected
             % Calculating distance to neighbors
-            if distanceMeasure(vertexCounter, tempList(neighbor)) == 0
-                distances(neighbor,1) = norm (currentVertex - neighborhood(neighbor,:));
-                distanceMeasure(vertexCounter, tempList(neighbor)) = distances(neighbor,1);
-                distanceMeasure(tempList(neighbor), vertexCounter) = distances(neighbor,1);
+            if dissimilarity(vertexCounter, tempList(neighbor)) == 0
+                distances(neighbor,1) = norm (currentVertex -...
+                    neighborhood(neighbor,:));
+                dissimilarity(vertexCounter, tempList(neighbor)) =...
+                    distances(neighbor,1);
+                dissimilarity(tempList(neighbor), vertexCounter) =...
+                    distances(neighbor,1);
             else
-                distances(neighbor,1) = distanceMeasure(vertexCounter, tempList(neighbor));
+                distances(neighbor,1) = dissimilarity(vertexCounter,...
+                    tempList(neighbor));
             end
         end
         [~,I] = sort(distances(:,1));
         closestTwo = neighborhood(I(1:2,1),:);
         % Calculating the vertex plane
-        normal = cross(closestTwo(1,:)-currentVertex, currentVertex-closestTwo(2,:));
+        normal = cross(closestTwo(1,:)-currentVertex, currentVertex -...
+            closestTwo(2,:));
         D = -dot(normal,currentVertex);
         for vertexCounter2 = 1:num_points
             % Ignoring already taken points
@@ -55,8 +60,9 @@ for vertexCounter = 1:num_points
                 continue;
             else
                 % Add all verteces in the plane to the current cluster
-                proximity_to_plane = abs((dot(normal, v(vertexCounter2,:))+ D)/norm(v(vertexCounter2,:)));
-                if proximity_to_plane <= tolerance
+                proximity = abs((dot(normal, v(vertexCounter2,:))+...
+                    D)/norm(v(vertexCounter2,:)));
+                if proximity <= tolerance
                     PlaneID(vertexCounter2,1) = currentPlane;
                 end
             end
@@ -78,7 +84,8 @@ result = {num_points;...
     PlaneID;...
     ClusterID...
     };
+num_fields = size(result,1);
 for plane = 1:p
-    result{9+plane} = v(PlaneID == plane,:);
+    result{num_fields+plane} = v(PlaneID == plane,:);
 end
 end
