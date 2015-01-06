@@ -24,7 +24,7 @@ ClusterID = result{9};
 disp(['File Name:                         ' filename]);
 disp(['Number of vertices:                ' num2str(num_points)]);
 disp(['Number of faces:                   ' num2str(num_faces)]);
-disp(['Number of cross sections:          ' num2str(k)]);
+disp(['Number of cross sections:          ' num2str(p)]);
 
 % http://www.mathworks.com/help/matlab/ref/colormap.html
 colors = jet(k);

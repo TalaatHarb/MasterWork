@@ -29,18 +29,8 @@ for vertexCounter = 1:num_points
     else
         currentVertex = v(vertexCounter, :);
         % Clustering
-        tempList = [];
-        for faceCounter = 1:num_faces
-            % Getting which vertecies are connected to the current vertex
-            if f(faceCounter, 1) == vertexCounter
-                tempList = [tempList;f(faceCounter, 2);f(faceCounter, 3)];
-            elseif f(faceCounter, 2) == vertexCounter
-                tempList = [tempList;f(faceCounter, 1);f(faceCounter, 3)];
-            elseif f(faceCounter, 3) == vertexCounter
-                tempList = [tempList;f(faceCounter, 1);f(faceCounter, 2)];
-            end
-        end
-        tempList = unique(tempList);
+        [~,tempList] = find(connectivity(vertexCounter,:)>0);
+        tempList = tempList.';
         num_connected = size(tempList, 1);
         neighborhood = v(tempList,:);
         distances = zeros(num_connected, 1);
