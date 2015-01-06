@@ -1,3 +1,4 @@
+clearvars -except filename
 [v, f, ~, ~, ~] = stlread(filename);
 [v, f]=patchslim(v, f);
 
@@ -87,7 +88,7 @@ for plane = 1:p
         
         % Ignoring already taken points
         currentVertexID = currentVertices(nextVertex,1);
-        if ClusterID(currentVertexID,1) ~= 0
+        if (ClusterID(currentVertexID,1) ~= 0) || isempty(nextVertex)
             currentCluster = currentCluster + 1;
             [~,nextVertex] = min(ClusterID(currentVertices,:));
             continue;
@@ -97,10 +98,13 @@ for plane = 1:p
             ClusterID(currentVertexID,1) = currentCluster;
             
             [~,tempList] = find(connectivity(currentVertexID,:)>0);
-            tempList = tempList(ClusterID(tempList) ~= currentCluster).';
-            if(isempty(tempList))
+            tempList = tempList(ClusterID(tempList) == 0).';
+            
+            if isempty(tempList)
+                currentVertexID = 1;
                 continue;
             end
+            
             num_connected = size(tempList, 1);
             neighborhood = v(tempList,:);
             distances = zeros(num_connected, 1);
@@ -123,6 +127,7 @@ for plane = 1:p
         end
         nextVertex = find(currentVertices == closestVertex);
     end
+    currentCluster = currentCluster + 1;
 end
 
 k = max(ClusterID(:));
