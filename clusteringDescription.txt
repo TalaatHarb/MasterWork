@@ -1,0 +1,14 @@
+STL reading as vertices and faces
+Creating the PlaneID and the ClusterID matrices
+Caclulating connectivity (Consider sparse Matrix)
+
+Loop over all vertices:
+For the current vertex find neighborhood vertices
+Calculating dissimilarity (Consider sparse matrix)
+Using closest two points create a plane
+Assing all points layaing in that plane to it
+
+Loop over all vertices:
+For the current vertex find the closest vertex that wasn't assigned to a cluster and isn't too far and assign it to current cluster and consider it as the current vertex
+
+gather information for later usage
