@@ -7,7 +7,7 @@ tic;
 filename = 'test.stl';
 
 %% Clustering
-result = do_cluster_02(filename);
+do_cluster_02_script;
 
 num_points = result{1};
 num_faces = result{2};
@@ -38,8 +38,11 @@ for cluster = 1:k
     % Displaying some information about the cluster
     fprintf('\n');
     disp(['Cluster ' num2str(cluster)]);
-    disp(['Cluster Center:                    ' num2str(mean(current_cluster))]);
-    disp(['Cluster Radius:                    ' num2str(norm(std(current_cluster)))]);
+    [center, radius, area, numericArea] = numericAreaCalculation(current_cluster);
+    disp(['Cluster Center:                    ' num2str(center)]);
+    disp(['Cluster Radius:                    ' num2str(radius)]);
+    disp(['Cluster Area:                      ' num2str(area)]);
+    disp(['Cluster Numeric Area:              ' num2str(numericArea)]);
     X = current_cluster(:,1);
     Y = current_cluster(:,2);
     Z = current_cluster(:,3);
@@ -59,5 +62,4 @@ alpha(0.5);
 hold off;
 
 fprintf('\n');
-
 toc;
