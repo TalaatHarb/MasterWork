@@ -146,14 +146,15 @@ end
 
 k = max(ClusterID);
 clusters = cell(k,1);
-[~,I] = sort(sequence);
+temp = v(sequence,:);
+clusterTemp = ClusterID(sequence);
 % for vertex = 1:num_points
 %     currentVertexID = I(vertex);
 %     clusters{ClusterID(currentVertexID),1} = v(currentVertexID,:);
 % end
 
 for cluster = 1:k
-    clusters{cluster,1} = v((ClusterID == cluster),:);
+    clusters{cluster,1} = temp((clusterTemp == cluster),:);
 end
 
 result = {num_points;...

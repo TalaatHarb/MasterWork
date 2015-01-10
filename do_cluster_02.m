@@ -12,7 +12,6 @@ num_faces = size(f,1);
 PlaneID = zeros(num_points, 1);
 currentPlane = 1;
 tolerance = 9e-7;
-dissimilarity = sparse(num_points, num_points);
 connectivity = sparse(num_points, num_points);
 for faceCounter = 1:num_faces
     connectivity(f(faceCounter,1),f(faceCounter,2)) = 1;
@@ -22,6 +21,7 @@ for faceCounter = 1:num_faces
     connectivity(f(faceCounter,3),f(faceCounter,1)) = 1;
     connectivity(f(faceCounter,1),f(faceCounter,3)) = 1;
 end
+dissimilarity = sparse(num_points, num_points);
 for vertexCounter = 1:num_points
     % Ignoring already taken points
     if PlaneID(vertexCounter,1) ~= 0
@@ -76,9 +76,11 @@ p = max(PlaneID(:));
 planes = cell(p,1);
 
 ClusterID = zeros(num_points, 1);
+sequence = zeros(num_points, 1);
+counter = 1;
 currentCluster = 1;
 for plane = 1:p
-    
+    skip = 0;
     planes{plane,1} = v(PlaneID == plane,:);
     currentPlane = planes{plane,1};
     currentVertices = find(PlaneID(:,1) == plane);
@@ -88,9 +90,7 @@ for plane = 1:p
         
         % Ignoring already taken points
         currentVertexID = currentVertices(nextVertex,1);
-        if ((ClusterID(currentVertexID,1) ~= 0) || isempty(nextVertex))
-            currentCluster = currentCluster + 1;
-            [~,nextVertex] = min(ClusterID(currentVertices,:));
+        if (isempty(nextVertex))
             continue;
         else
             currentVertex = currentPlane(nextVertex, :);
@@ -99,12 +99,6 @@ for plane = 1:p
             
             [~,tempList] = find(connectivity(currentVertexID,:)>0);
             tempList = tempList(ClusterID(tempList) ~= currentCluster).';
-            
-            if isempty(tempList)
-                currentCluster = currentCluster + 1;
-                [~,nextVertex] = min(ClusterID(currentVertices,:));
-                continue;
-            end
             
             num_connected = size(tempList, 1);
             neighborhood = v(tempList,:);
@@ -126,20 +120,37 @@ for plane = 1:p
             [~,I] = min(distances(:,1));
             closestVertex = tempList(I,1);
         end
+        
+         
         nextVertex = find(currentVertices == closestVertex);
         if isempty(nextVertex)
             currentCluster = currentCluster + 1;
-            [~,nextVertex] = min(ClusterID(currentVertices,:));
-            continue;
+            
+            [value,nextVertex] = min(ClusterID(currentVertices,:));
+            if(value ~= 0)
+                skip = 1;
+            end
         end
+        
+        sequence(counter) = currentVertexID;
+        counter = counter + 1;       
+       
     end
-    currentCluster = currentCluster + 1;
+    
+    if(skip == 1)
+        skip = 0;
+    else
+        currentCluster = currentCluster + 1;
+    end
 end
-clusterList = unique(ClusterID);
-k = size(clusterList,1);
+
+k = max(ClusterID);
 clusters = cell(k,1);
+temp = v(sequence,:);
+clusterTemp = ClusterID(sequence);
+
 for cluster = 1:k
-    clusters{cluster,1} = v(ClusterID == clusterList(cluster,1),:);
+    clusters{cluster,1} = temp((clusterTemp == cluster),:);
 end
 
 result = {num_points;...
