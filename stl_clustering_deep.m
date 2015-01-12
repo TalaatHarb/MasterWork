@@ -27,6 +27,7 @@ disp(['File Name:                         ' filename]);
 disp(['Number of vertices:                ' num2str(num_points)]);
 disp(['Number of faces:                   ' num2str(num_faces)]);
 disp(['Number of cross sections:          ' num2str(p)]);
+disp(['Number of clusters:                ' num2str(k)]);
 
 % http://www.mathworks.com/help/matlab/ref/colormap.html
 colors = jet(k);
